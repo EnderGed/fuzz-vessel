@@ -6,37 +6,57 @@ import java.util.Scanner;
 public class VesselMain {
 
 	private Scanner scanner;
+	private Vessel server = null;
+	public boolean feierband = false;
+	private String dcMsg = "Ghost application has disconnected.";
 
 	public static void main(String[] args) {
-		if (args.length != 3) {
+		if (args.length != 2 && args.length!=3) {
 			printUsage();
 			return;
 		}
 		int port;
-		String className = args[2];
 		String addr = args[0];
+		String className = "";
 		try {
 			port = Integer.parseInt(args[1]);
 		} catch (NumberFormatException nfe) {
 			printUsage();
 			return;
 		}
-		Vessel server = null;
+		if(args.length==3)
+			className = args[2];
+		VesselMain vm = new VesselMain();
 		try {
-			server = new Vessel(addr, port, className);
+			vm.server = new Vessel(addr, port, className);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
-		VesselMain cm = new VesselMain();
-		cm.scanner = new Scanner(System.in);
+		vm.scanner = new Scanner(System.in);
+		while (!vm.feierband) {
+			vm.handleClient();
+		}
+		vm.server.closeAll();
+		vm.scanner.close();
+		System.out.println("Bye.");
+	}
+
+	public void handleClient() {
+		try {
+			server.connectionAcc();
+		} catch (Exception e) {
+			System.out.println(dcMsg);
+			return;
+		}
 		String comm;
 		while (true) {
-			System.out.println("Type a function");
-			comm = cm.scanner.nextLine();
+			System.out.println("Type a function.");
+			comm = scanner.nextLine();
 			if (comm.toLowerCase().startsWith("help"))
 				printHelp();
 			else if (comm.toLowerCase().startsWith("quit")) {
+				feierband = true;
 				break;
 			} else if (comm.toLowerCase().startsWith("do")) {
 				try {
@@ -49,22 +69,23 @@ public class VesselMain {
 					System.out.println("Tests were completed in "
 							+ estimatedTime + " ms.");
 				} catch (EOFException eofe) {
-					System.out
-							.println("Ghost application has probably crashed. This means, the test has most likely failed.");
+					System.out.println(dcMsg);
+					break;
 				} catch (Exception e) {
 					e.printStackTrace();
-					server.closeAll();
+					break;
 				}
-			} else if (comm.toLowerCase().startsWith("query")) {
+			} else if (comm.toLowerCase().startsWith("query")
+					|| comm.toLowerCase().startsWith("initiate")) {
 				try {
 					server.send(comm);
 					System.out.println(server.receive());
 				} catch (EOFException eofe) {
-					System.out
-							.println("Ghost application has probably crashed. This means, the test has most likely failed.");
+					System.out.println(dcMsg);
+					break;
 				} catch (Exception e) {
 					e.printStackTrace();
-					server.closeAll();
+					break;
 				}
 			} else {
 				System.out
@@ -76,21 +97,20 @@ public class VesselMain {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		server.closeAll();
-		cm.scanner.close();
-		System.out.println("Exiting.");
+		server.closeClient();
 	}
 
 	public static void printHelp() {
 		System.out.println("== HELP ==");
-		// System.out.println("do generate [number of tests] [method name] [arg types ... ]\t\tExecute method with generated args of specified types.");
+		System.out
+				.println("initiate [class name]\t\tInitiate tests for class [class name].");
 		System.out
 				.println("do [number of tests] [method name] [arg types ... ]\t\tExecute method with generated args of specified types.");
 		// System.out.println("do fixed [number of tests] [method name] [[arg type] [arg val] ... ]\t\tExecute method with specified args.");
 		System.out
-				.println("query [method name]\t\tQuery a method to get its arguments.");
+				.println("query method [method name]\t\tQuery a method to get its arguments.");
 		System.out
-				.println("query-class\t\tQuery the class to get its methods.");
+				.println("query class\t\tQuery the class to get its methods.");
 		System.out.println("help\t\tPrint this message.");
 		System.out.println("quit\t\tExit the program.");
 	}
@@ -98,7 +118,7 @@ public class VesselMain {
 	public static void printUsage() {
 		System.out.println("== USAGE ==");
 		System.out
-				.println("== VesselMain [address] [port number] [class name] ==");
+				.println("== VesselMain [address] [port number] (optionally)[class name] ==");
 	}
 
 }

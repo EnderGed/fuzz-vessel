@@ -10,15 +10,16 @@ public class Vessel {
 	private Socket cSocket;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
+	private String className;
 
 	public Vessel(String addr, int port, String className) throws Exception {
 		try {
 			sSocket = new ServerSocket();
 			sSocket.setReuseAddress(true);
 			sSocket.bind(new InetSocketAddress(port));
+			this.className = className;
 			System.out.println("Server running at port "
 					+ sSocket.getLocalPort() + "; awaiting connection.");
-			connectionAcc(className);
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
@@ -29,18 +30,17 @@ public class Vessel {
 		}
 	}
 
-	private void connectionAcc(String className) throws Exception {
+	public void connectionAcc() throws Exception {
 		try {
 			cSocket = sSocket.accept();
 			oos = new ObjectOutputStream(cSocket.getOutputStream());
 			ois = new ObjectInputStream(cSocket.getInputStream());
-			System.out.println("Connection accepted.");
-			String[] hello = { "hello", className };
-			oos.writeObject(hello);
-			oos.flush();
+			System.out.println("New connection accepted.");
+			send("hello " + className);
+			System.out.println(receive());
 		} catch (Exception e) {
 			e.printStackTrace();
-			closeAll();
+			closeClient();
 			throw e;
 		}
 	}
@@ -73,7 +73,7 @@ public class Vessel {
 		}
 	}
 
-	public void closeAll() {
+	public void closeClient() {
 		try {
 			oos.close();
 		} catch (Exception e1) {
@@ -85,6 +85,14 @@ public class Vessel {
 		try {
 			cSocket.close();
 		} catch (Exception e3) {
+		}
+	}
+
+	public void closeAll() {
+		closeClient();
+		try {
+			sSocket.close();
+		} catch (Exception e) {
 		}
 	}
 
