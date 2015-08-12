@@ -1,10 +1,14 @@
+package vessel.communication;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Vessel {
+import vessel.utils.VesselUtils;
+
+public class VesselServer {
 
 	private ServerSocket sSocket;
 	private Socket cSocket;
@@ -12,7 +16,8 @@ public class Vessel {
 	private ObjectInputStream ois;
 	private String className;
 
-	public Vessel(String addr, int port, String className) throws Exception {
+	public VesselServer(String addr, int port, String className)
+			throws Exception {
 		try {
 			sSocket = new ServerSocket();
 			sSocket.setReuseAddress(true);
@@ -55,9 +60,31 @@ public class Vessel {
 		}
 	}
 
+	/*
+	 * This cannot be handled by the Ghost application at this time, so instead
+	 * of sending data, the Vessel simply prints classnames of the generated
+	 * objects.
+	 */
+	public void sendMethodData(String methodName, Class[] argTypes, Object[] objs)
+			throws Exception {
+		String[] mn = { methodName };
+		Boolean[] separator = { false };
+		try {
+			Object[] objAll = VesselUtils.joinArrays(VesselUtils.joinArrays(mn, argTypes), VesselUtils.joinArrays(separator, objs));
+			for(Object o : objAll){
+				System.out.println(o);
+			}
+			oos.writeObject(objAll);
+			oos.flush();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	public String receive() throws Exception {
 		try {
-			return joinStringArray(" ", (String[]) (ois.readObject()));
+			return VesselUtils.joinStringArray(" ",
+					(String[]) (ois.readObject()));
 		} catch (Exception e) {
 			throw e;
 		}
@@ -96,14 +123,4 @@ public class Vessel {
 		}
 	}
 
-	private String joinStringArray(String separator, String[] array) {
-		if (array.length == 0)
-			return "";
-		StringBuilder sb = new StringBuilder(array[0]);
-		for (int i = 1; i < array.length; ++i) {
-			sb.append(separator);
-			sb.append(array[i]);
-		}
-		return sb.toString();
-	}
 }

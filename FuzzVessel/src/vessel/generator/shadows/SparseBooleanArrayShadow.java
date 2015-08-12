@@ -1,15 +1,15 @@
-package generator;
+package vessel.generator.shadows;
 
 /*
- * Copy-paste from the Android implementation of SparseBooleanArray.
+ * Copy-pasted from the Android implementation of SparseBooleanArray.
  */
-public class SparseBooleanArray implements Cloneable {
+public class SparseBooleanArrayShadow implements Cloneable {
 
-    public SparseBooleanArray() {
+    public SparseBooleanArrayShadow() {
         this(10);
     }
 
-    public SparseBooleanArray(int initialCapacity) {
+    public SparseBooleanArrayShadow(int initialCapacity) {
         initialCapacity = idealIntArraySize(initialCapacity);
 
         mKeys = new int[initialCapacity];
@@ -18,10 +18,10 @@ public class SparseBooleanArray implements Cloneable {
     }
 
     @Override
-    public SparseBooleanArray clone() {
-        SparseBooleanArray clone = null;
+    public SparseBooleanArrayShadow clone() {
+        SparseBooleanArrayShadow clone = null;
         try {
-            clone = (SparseBooleanArray) super.clone();
+            clone = (SparseBooleanArrayShadow) super.clone();
             clone.mKeys = mKeys.clone();
             clone.mValues = mValues.clone();
         } catch (CloneNotSupportedException cnse) {

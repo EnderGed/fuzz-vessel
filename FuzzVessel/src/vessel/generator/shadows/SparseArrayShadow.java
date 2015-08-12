@@ -1,10 +1,9 @@
-package generator;
+package vessel.generator.shadows;
 
 /*
- * Copy-paste from the Android implementation of SparseArray.
+ * Copy-pasted from the Android implementation of SparseArray.
  */
-
-public class SparseArray<E> implements Cloneable {
+public class SparseArrayShadow<E> implements Cloneable {
 
 	private static final Object DELETED = new Object();
 	private boolean mGarbage = false;
@@ -13,11 +12,11 @@ public class SparseArray<E> implements Cloneable {
 	private Object[] mValues;
 	private int mSize;
 
-	public SparseArray() {
+	public SparseArrayShadow() {
 		this(10);
 	}
 
-	public SparseArray(int initialCapacity) {
+	public SparseArrayShadow(int initialCapacity) {
 		initialCapacity = idealIntArraySize(initialCapacity);
 
 		mKeys = new int[initialCapacity];
@@ -27,10 +26,10 @@ public class SparseArray<E> implements Cloneable {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public SparseArray<E> clone() {
-		SparseArray<E> clone = null;
+	public SparseArrayShadow<E> clone() {
+		SparseArrayShadow<E> clone = null;
 		try {
-			clone = (SparseArray<E>) super.clone();
+			clone = (SparseArrayShadow<E>) super.clone();
 			clone.mKeys = mKeys.clone();
 			clone.mValues = mValues.clone();
 		} catch (CloneNotSupportedException cnse) {

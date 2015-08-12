@@ -1,17 +1,23 @@
+package vessel.communication;
+
 import java.io.EOFException;
+import java.util.Arrays;
 import java.util.Scanner;
+
+import vessel.generator.Generator;
 
 //do 1 setRemoteControlClientPlaybackPosition int long
 //do 1 registerMediaButtonIntent android.app.PendingIntent android.content.ComponentName android.os.IBinder
+//do setRemoteControlClientPlaybackPosition int long
 public class VesselMain {
 
 	private Scanner scanner;
-	private Vessel server = null;
+	private VesselServer server = null;
 	public boolean feierband = false;
 	private String dcMsg = "Ghost application has disconnected.";
 
 	public static void main(String[] args) {
-		if (args.length != 2 && args.length!=3) {
+		if (args.length != 2 && args.length != 3) {
 			printUsage();
 			return;
 		}
@@ -24,11 +30,11 @@ public class VesselMain {
 			printUsage();
 			return;
 		}
-		if(args.length==3)
+		if (args.length == 3)
 			className = args[2];
 		VesselMain vm = new VesselMain();
 		try {
-			vm.server = new Vessel(addr, port, className);
+			vm.server = new VesselServer(addr, port, className);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -50,6 +56,7 @@ public class VesselMain {
 			return;
 		}
 		String comm;
+		Generator generator = new Generator();
 		while (true) {
 			System.out.println("Type a function.");
 			comm = scanner.nextLine();
@@ -61,7 +68,14 @@ public class VesselMain {
 			} else if (comm.toLowerCase().startsWith("do")) {
 				try {
 					long startTime = System.currentTimeMillis();
-					server.send(comm);
+					String[] commSplit = comm.split(" ");
+					String methodName = commSplit[1];
+					String[] args = Arrays.copyOfRange(commSplit, 2,
+							commSplit.length);
+					server.sendMethodData(methodName,
+							generator.getClassesFromClassNames(args),
+							generator.getRandomArgsFromClassNames(args)); // haha
+					// server.send(comm);
 					System.out
 							.println("Please wait for end of test execution.");
 					System.out.println(server.receive());
@@ -105,8 +119,7 @@ public class VesselMain {
 		System.out
 				.println("initiate [class name]\t\tInitiate tests for class [class name].");
 		System.out
-				.println("do [number of tests] [method name] [arg types ... ]\t\tExecute method with generated args of specified types.");
-		// System.out.println("do fixed [number of tests] [method name] [[arg type] [arg val] ... ]\t\tExecute method with specified args.");
+				.println("do [method name] [arg types ... ]\t\tExecute method with generated args of specified types.");
 		System.out
 				.println("query method [method name]\t\tQuery a method to get its arguments.");
 		System.out
