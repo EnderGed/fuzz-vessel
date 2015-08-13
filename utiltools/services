@@ -1,0 +1,574 @@
+public static final String ACCESSIBILITY_SERVICE
+Added in API level 4
+
+Use with getSystemService(String) to retrieve a AccessibilityManager for giving the user feedback for UI events through the registered event listeners.
+See Also
+
+    getSystemService(String)
+    AccessibilityManager
+
+Constant Value: "accessibility"
+public static final String ACCOUNT_SERVICE
+Added in API level 5
+
+Use with getSystemService(String) to retrieve a AccountManager for receiving intents at a time of your choosing.
+See Also
+
+    getSystemService(String)
+    AccountManager
+
+Constant Value: "account"
+public static final String ACTIVITY_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a ActivityManager for interacting with the global system state.
+See Also
+
+    getSystemService(String)
+    ActivityManager
+
+Constant Value: "activity"
+public static final String ALARM_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a AlarmManager for receiving intents at a time of your choosing.
+See Also
+
+    getSystemService(String)
+    AlarmManager
+
+Constant Value: "alarm"
+public static final String APPWIDGET_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a AppWidgetManager for accessing AppWidgets.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "appwidget"
+public static final String APP_OPS_SERVICE
+Added in API level 19
+
+Use with getSystemService(String) to retrieve a AppOpsManager for tracking application operations on the device.
+See Also
+
+    getSystemService(String)
+    AppOpsManager
+
+Constant Value: "appops"
+public static final String AUDIO_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a AudioManager for handling management of volume, ringer modes and audio routing.
+See Also
+
+    getSystemService(String)
+    AudioManager
+
+Constant Value: "audio"
+public static final String BATTERY_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a BatteryManager for managing battery state.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "batterymanager"
+public static final String BLUETOOTH_SERVICE
+Added in API level 18
+
+Use with getSystemService(String) to retrieve a BluetoothAdapter for using Bluetooth.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "bluetooth"
+public static final String CAMERA_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a CameraManager for interacting with camera devices.
+See Also
+
+    getSystemService(String)
+    CameraManager
+
+Constant Value: "camera"
+public static final String CAPTIONING_SERVICE
+Added in API level 19
+
+Use with getSystemService(String) to retrieve a CaptioningManager for obtaining captioning properties and listening for changes in captioning preferences.
+See Also
+
+    getSystemService(String)
+    CaptioningManager
+
+Constant Value: "captioning"
+public static final String CLIPBOARD_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a ClipboardManager for accessing and modifying the contents of the global clipboard.
+See Also
+
+    getSystemService(String)
+    ClipboardManager
+
+Constant Value: "clipboard"
+public static final String CONNECTIVITY_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a ConnectivityManager for handling management of network connections.
+See Also
+
+    getSystemService(String)
+    ConnectivityManager
+
+Constant Value: "connectivity"
+public static final String CONSUMER_IR_SERVICE
+Added in API level 19
+
+Use with getSystemService(String) to retrieve a ConsumerIrManager for transmitting infrared signals from the device.
+See Also
+
+    getSystemService(String)
+    ConsumerIrManager
+
+Constant Value: "consumer_ir"
+public static final int CONTEXT_IGNORE_SECURITY
+Added in API level 1
+
+Flag for use with createPackageContext(String, int): ignore any security restrictions on the Context being requested, allowing it to always be loaded. For use with CONTEXT_INCLUDE_CODE to allow code to be loaded into a process even when it isn't safe to do so. Use with extreme care!
+Constant Value: 2 (0x00000002)
+public static final int CONTEXT_INCLUDE_CODE
+Added in API level 1
+
+Flag for use with createPackageContext(String, int): include the application code with the context. This means loading code into the caller's process, so that getClassLoader() can be used to instantiate the application's classes. Setting this flags imposes security restrictions on what application context you can access; if the requested application can not be safely loaded into your process, java.lang.SecurityException will be thrown. If this flag is not set, there will be no restrictions on the packages that can be loaded, but getClassLoader() will always return the default system class loader.
+Constant Value: 1 (0x00000001)
+public static final int CONTEXT_RESTRICTED
+Added in API level 4
+
+Flag for use with createPackageContext(String, int): a restricted context may disable specific features. For instance, a View associated with a restricted context would ignore particular XML attributes.
+Constant Value: 4 (0x00000004)
+public static final String DEVICE_POLICY_SERVICE
+Added in API level 8
+
+Use with getSystemService(String) to retrieve a DevicePolicyManager for working with global device policy management.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "device_policy"
+public static final String DISPLAY_SERVICE
+Added in API level 17
+
+Use with getSystemService(String) to retrieve a DisplayManager for interacting with display devices.
+See Also
+
+    getSystemService(String)
+    DisplayManager
+
+Constant Value: "display"
+public static final String DOWNLOAD_SERVICE
+Added in API level 9
+
+Use with getSystemService(String) to retrieve a DownloadManager for requesting HTTP downloads.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "download"
+public static final String DROPBOX_SERVICE
+Added in API level 8
+
+Use with getSystemService(String) to retrieve a DropBoxManager instance for recording diagnostic logs.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "dropbox"
+public static final String INPUT_METHOD_SERVICE
+Added in API level 3
+
+Use with getSystemService(String) to retrieve a InputMethodManager for accessing input methods.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "input_method"
+public static final String INPUT_SERVICE
+Added in API level 16
+
+Use with getSystemService(String) to retrieve a InputManager for interacting with input devices.
+See Also
+
+    getSystemService(String)
+    InputManager
+
+Constant Value: "input"
+public static final String JOB_SCHEDULER_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a JobScheduler instance for managing occasional background tasks.
+See Also
+
+    getSystemService(String)
+    JobScheduler
+
+Constant Value: "jobscheduler"
+public static final String KEYGUARD_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a NotificationManager for controlling keyguard.
+See Also
+
+    getSystemService(String)
+    KeyguardManager
+
+Constant Value: "keyguard"
+public static final String LAUNCHER_APPS_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a LauncherApps for querying and monitoring launchable apps across profiles of a user.
+See Also
+
+    getSystemService(String)
+    LauncherApps
+
+Constant Value: "launcherapps"
+public static final String LAYOUT_INFLATER_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a LayoutInflater for inflating layout resources in this context.
+See Also
+
+    getSystemService(String)
+    LayoutInflater
+
+Constant Value: "layout_inflater"
+public static final String LOCATION_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a LocationManager for controlling location updates.
+See Also
+
+    getSystemService(String)
+    LocationManager
+
+Constant Value: "location"
+public static final String MEDIA_PROJECTION_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a MediaProjectionManager instance for managing media projection sessions.
+See Also
+
+    getSystemService(String)
+    ERROR(/android.media.projection.ProjectionManager)
+
+Constant Value: "media_projection"
+public static final String MEDIA_ROUTER_SERVICE
+Added in API level 16
+
+Use with getSystemService(String) to retrieve a MediaRouter for controlling and managing routing of media.
+See Also
+
+    getSystemService(String)
+    MediaRouter
+
+Constant Value: "media_router"
+public static final String MEDIA_SESSION_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a MediaSessionManager for managing media Sessions.
+See Also
+
+    getSystemService(String)
+    MediaSessionManager
+
+Constant Value: "media_session"
+public static final int MODE_APPEND
+Added in API level 1
+
+File creation mode: for use with openFileOutput(String, int), if the file already exists then write data to the end of the existing file instead of erasing it.
+See Also
+
+    openFileOutput(String, int)
+
+Constant Value: 32768 (0x00008000)
+public static final int MODE_ENABLE_WRITE_AHEAD_LOGGING
+Added in API level 16
+
+Database open flag: when set, the database is opened with write-ahead logging enabled by default.
+See Also
+
+    openOrCreateDatabase(String, int, CursorFactory)
+    openOrCreateDatabase(String, int, CursorFactory, DatabaseErrorHandler)
+    enableWriteAheadLogging()
+
+Constant Value: 8 (0x00000008)
+public static final int MODE_MULTI_PROCESS
+Added in API level 11
+
+SharedPreference loading flag: when set, the file on disk will be checked for modification even if the shared preferences instance is already loaded in this process. This behavior is sometimes desired in cases where the application has multiple processes, all writing to the same SharedPreferences file. Generally there are better forms of communication between processes, though.
+
+This was the legacy (but undocumented) behavior in and before Gingerbread (Android 2.3) and this flag is implied when targetting such releases. For applications targetting SDK versions greater than Android 2.3, this flag must be explicitly set if desired.
+See Also
+
+    getSharedPreferences(String, int)
+
+Constant Value: 4 (0x00000004)
+public static final int MODE_PRIVATE
+Added in API level 1
+
+File creation mode: the default mode, where the created file can only be accessed by the calling application (or all applications sharing the same user ID).
+See Also
+
+    MODE_WORLD_READABLE
+    MODE_WORLD_WRITEABLE
+
+Constant Value: 0 (0x00000000)
+public static final int MODE_WORLD_READABLE
+Added in API level 1
+
+This constant was deprecated in API level 17.
+Creating world-readable files is very dangerous, and likely to cause security holes in applications. It is strongly discouraged; instead, applications should use more formal mechanism for interactions such as ContentProvider, BroadcastReceiver, and Service. There are no guarantees that this access mode will remain on a file, such as when it goes through a backup and restore. File creation mode: allow all other applications to have read access to the created file.
+
+See Also
+
+    MODE_PRIVATE
+    MODE_WORLD_WRITEABLE
+
+Constant Value: 1 (0x00000001)
+public static final int MODE_WORLD_WRITEABLE
+Added in API level 1
+
+This constant was deprecated in API level 17.
+Creating world-writable files is very dangerous, and likely to cause security holes in applications. It is strongly discouraged; instead, applications should use more formal mechanism for interactions such as ContentProvider, BroadcastReceiver, and Service. There are no guarantees that this access mode will remain on a file, such as when it goes through a backup and restore. File creation mode: allow all other applications to have write access to the created file.
+
+See Also
+
+    MODE_PRIVATE
+    MODE_WORLD_READABLE
+
+Constant Value: 2 (0x00000002)
+public static final String NFC_SERVICE
+Added in API level 10
+
+Use with getSystemService(String) to retrieve a NfcManager for using NFC.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "nfc"
+public static final String NOTIFICATION_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a NotificationManager for informing the user of background events.
+See Also
+
+    getSystemService(String)
+    NotificationManager
+
+Constant Value: "notification"
+public static final String NSD_SERVICE
+Added in API level 16
+
+Use with getSystemService(String) to retrieve a NsdManager for handling management of network service discovery
+See Also
+
+    getSystemService(String)
+    NsdManager
+
+Constant Value: "servicediscovery"
+public static final String POWER_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a PowerManager for controlling power management, including "wake locks," which let you keep the device on while you're running long tasks.
+Constant Value: "power"
+public static final String PRINT_SERVICE
+Added in API level 19
+
+PrintManager for printing and managing printers and print tasks.
+See Also
+
+    getSystemService(String)
+    PrintManager
+
+Constant Value: "print"
+public static final String RESTRICTIONS_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a RestrictionsManager for retrieving application restrictions and requesting permissions for restricted operations.
+See Also
+
+    getSystemService(String)
+    RestrictionsManager
+
+Constant Value: "restrictions"
+public static final String SEARCH_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a SearchManager for handling searches.
+See Also
+
+    getSystemService(String)
+    SearchManager
+
+Constant Value: "search"
+public static final String SENSOR_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a SensorManager for accessing sensors.
+See Also
+
+    getSystemService(String)
+    SensorManager
+
+Constant Value: "sensor"
+public static final String STORAGE_SERVICE
+Added in API level 9
+
+Use with getSystemService(String) to retrieve a StorageManager for accessing system storage functions.
+See Also
+
+    getSystemService(String)
+    StorageManager
+
+Constant Value: "storage"
+public static final String TELECOM_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a TelecomManager to manage telecom-related features of the device.
+See Also
+
+    getSystemService(String)
+    TelecomManager
+
+Constant Value: "telecom"
+public static final String TELEPHONY_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a TelephonyManager for handling management the telephony features of the device.
+See Also
+
+    getSystemService(String)
+    TelephonyManager
+
+Constant Value: "phone"
+public static final String TELEPHONY_SUBSCRIPTION_SERVICE
+Added in API level 22
+
+Use with getSystemService(String) to retrieve a SubscriptionManager for handling management the telephony subscriptions of the device.
+See Also
+
+    getSystemService(String)
+    SubscriptionManager
+
+Constant Value: "telephony_subscription_service"
+public static final String TEXT_SERVICES_MANAGER_SERVICE
+Added in API level 14
+
+Use with getSystemService(String) to retrieve a TextServicesManager for accessing text services.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "textservices"
+public static final String TV_INPUT_SERVICE
+Added in API level 21
+
+Use with getSystemService(String) to retrieve a TvInputManager for interacting with TV inputs on the device.
+See Also
+
+    getSystemService(String)
+    TvInputManager
+
+Constant Value: "tv_input"
+public static final String UI_MODE_SERVICE
+Added in API level 8
+
+Use with getSystemService(String) to retrieve a UiModeManager for controlling UI modes.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "uimode"
+public static final String USAGE_STATS_SERVICE
+Added in API level 22
+
+Use with getSystemService(String) to retrieve a UsageStatsManager for querying device usage stats.
+See Also
+
+    getSystemService(String)
+    UsageStatsManager
+
+Constant Value: "usagestats"
+public static final String USB_SERVICE
+Added in API level 12
+
+Use with getSystemService(String) to retrieve a UsbManager for access to USB devices (as a USB host) and for controlling this device's behavior as a USB device.
+See Also
+
+    getSystemService(String)
+    UsbManager
+
+Constant Value: "usb"
+public static final String USER_SERVICE
+Added in API level 17
+
+Use with getSystemService(String) to retrieve a UserManager for managing users on devices that support multiple users.
+See Also
+
+    getSystemService(String)
+    UserManager
+
+Constant Value: "user"
+public static final String VIBRATOR_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a Vibrator for interacting with the vibration hardware.
+See Also
+
+    getSystemService(String)
+    Vibrator
+
+Constant Value: "vibrator"
+public static final String WALLPAPER_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a com.android.server.WallpaperService for accessing wallpapers.
+See Also
+
+    getSystemService(String)
+
+Constant Value: "wallpaper"
+public static final String WIFI_P2P_SERVICE
+Added in API level 14
+
+Use with getSystemService(String) to retrieve a WifiP2pManager for handling management of Wi-Fi peer-to-peer connections.
+See Also
+
+    getSystemService(String)
+    WifiP2pManager
+
+Constant Value: "wifip2p"
+public static final String WIFI_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a WifiManager for handling management of Wi-Fi access.
+See Also
+
+    getSystemService(String)
+    WifiManager
+
+Constant Value: "wifi"
+public static final String WINDOW_SERVICE
+Added in API level 1
+
+Use with getSystemService(String) to retrieve a WindowManager for accessing the system's window manager.
+See Also
+
+    getSystemService(String)
+    WindowManager
+
+Constant Value: "window"
