@@ -1,4 +1,4 @@
-package vessel.generator.shadows;
+package generator.shadows;
 
 /*
  * There is no point creating a file descriptor on the Vessel side.

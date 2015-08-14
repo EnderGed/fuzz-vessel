@@ -1,4 +1,4 @@
-package vessel.generator.shadows;
+package generator.shadows;
 
 /*
  * Copy-pasted from the Android implementation of SparseArray.

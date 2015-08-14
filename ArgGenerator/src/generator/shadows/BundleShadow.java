@@ -1,4 +1,4 @@
-package vessel.generator.shadows;
+package generator.shadows;
 
 import java.util.HashMap;
 
@@ -7,7 +7,7 @@ import java.util.HashMap;
  */
 public class BundleShadow {
 
-	private HashMap<String, Object> map;
+	public HashMap<String, Object> map;
 
 	public BundleShadow() {
 		map = new HashMap<>();

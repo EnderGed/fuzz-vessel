@@ -1,5 +1,11 @@
-package vessel.generator;
+package generator;
 
+
+import generator.shadows.BundleShadow;
+import generator.shadows.FileDescriptorShadow;
+import generator.shadows.ParcelableShadow;
+import generator.shadows.SparseArrayShadow;
+import generator.shadows.SparseBooleanArrayShadow;
 
 import java.io.FileDescriptor;
 import java.io.Serializable;
@@ -12,11 +18,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import vessel.generator.shadows.BundleShadow;
-import vessel.generator.shadows.FileDescriptorShadow;
-import vessel.generator.shadows.ParcelableShadow;
-import vessel.generator.shadows.SparseArrayShadow;
-import vessel.generator.shadows.SparseBooleanArrayShadow;
 
 /*
  * A massive class for generating some values. Some parts of it are going to be replaced by
