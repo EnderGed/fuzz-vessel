@@ -8,7 +8,7 @@ import java.net.Socket;
 
 import vessel.utils.VesselUtils;
 
-public class VesselServer {
+public class VesselServer{
 
 	private ServerSocket sSocket;
 	private Socket cSocket;
@@ -65,15 +65,15 @@ public class VesselServer {
 	 * of sending data, the Vessel simply prints classnames of the generated
 	 * objects.
 	 */
-	public void sendMethodData(String methodName, Class[] argTypes, Object[] objs)
+	public void sendMethodData(String methodName, Class<?>[] argTypes, Object[] objs)
 			throws Exception {
 		String[] mn = { methodName };
 		Boolean[] separator = { false };
 		try {
 			Object[] objAll = VesselUtils.joinArrays(VesselUtils.joinArrays(mn, argTypes), VesselUtils.joinArrays(separator, objs));
-			for(Object o : objAll){
+			/*for(Object o : objAll){
 				System.out.println(o);
-			}
+			}*/
 			oos.writeObject(objAll);
 			oos.flush();
 		} catch (Exception e) {

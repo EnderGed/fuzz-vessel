@@ -1,14 +1,18 @@
 package vessel.communication;
 
 import java.io.EOFException;
+import java.io.InvalidClassException;
 import java.util.Arrays;
 import java.util.Scanner;
+
+import vessel.generation.ShadowWeaver;
 
 import generator.Generator;
 
 //do setRemoteControlClientPlaybackPosition int long
 //do registerMediaButtonIntent android.app.PendingIntent android.content.ComponentName android.os.IBinder
 //do setRemoteControlClientPlaybackPosition int long
+//do setStreamSolo int boolean android.os.IBinder
 public class VesselMain {
 
 	private Scanner scanner;
@@ -57,6 +61,7 @@ public class VesselMain {
 		}
 		String comm;
 		Generator generator = new Generator();
+		ShadowWeaver weaver = new ShadowWeaver();
 		while (true) {
 			System.out.println("Type a function.");
 			comm = scanner.nextLine();
@@ -67,14 +72,26 @@ public class VesselMain {
 				break;
 			} else if (comm.toLowerCase().startsWith("do")) {
 				try {
-					long startTime = System.currentTimeMillis();
 					String[] commSplit = comm.split(" ");
 					String methodName = commSplit[1];
 					String[] args = Arrays.copyOfRange(commSplit, 2,
 							commSplit.length);
-					server.sendMethodData(methodName,
-							generator.getClassesFromClassNames(args),
-							generator.getRandomArgsFromClassNames(args));
+					Class<?>[] types = generator.getClassesFromClassNames(args);
+					Object[] values;
+					try {
+						values = generator.generateValuesFromRaw(weaver
+								.weaveArray(args));
+					} catch (ClassNotFoundException cnfe) {
+						System.out
+								.println("Incorrect class detected. (Class not found exception)");
+						continue;
+					} catch (InvalidClassException ice) {
+						System.out
+								.println("Incorrect class detected. (Invalid class exception)");
+						continue;
+					}
+					long startTime = System.currentTimeMillis();
+					server.sendMethodData(methodName, types, values);
 					System.out
 							.println("Please wait for end of test execution.");
 					System.out.println(server.receive());

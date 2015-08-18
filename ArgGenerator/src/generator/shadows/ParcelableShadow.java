@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-/*
+/**
  * I have a class; I don't know what it is; I don't know what to do with it; Let the Ghost handle this.
  * (This is going to be used for Android classes.)
+ * The shadow is created by vessel and passed to the generator. All values in fieldData and constructorArgs
+ * are originally either strings containing type names or shadows. The generator reads type names and generates
+ * objects of designated type in their place.
  */
 public class ParcelableShadow implements Serializable {
 
