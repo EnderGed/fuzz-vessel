@@ -10,6 +10,10 @@ import java.io.FileDescriptor;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +21,8 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * A massive class for generating some values. Some parts of it are going to be
- * replaced by the generator written by people who live downstairs.
+ * A massive class for generating some random data.
  */
-// TODO: CLEAN THIS UP. Remove redundant stuff. Make it work in accordance to
-// some consistent logic.
 public class Generator {
 
 	private int defaultQuantity = 64;
@@ -260,11 +261,25 @@ public class Generator {
 		}
 	}
 
+	/**
+	 * Should an object of this class be generated inside
+	 * getRandomObjectByClass? Applies to File Descriptor, Lists and Maps.
+	 * 
+	 * @param cl
+	 * @return
+	 */
 	private boolean generatedSomewhereElse(Class<?> cl) {
 		return cl == FileDescriptor.class || List.class.isAssignableFrom(cl)
 				|| Map.class.isAssignableFrom(cl);
 	}
 
+	/**
+	 * Generate the objects which getRandomObjectByClass doesn't. Applies to
+	 * File Descriptor, Lists and Maps.
+	 * 
+	 * @param cl
+	 * @return
+	 */
 	private Object generateSomewhereElse(Class<?> cl, int quantity) {
 		if (cl == FileDescriptor.class)
 			return new FileDescriptorShadow(getRandomCharSequence(cl));
@@ -341,34 +356,80 @@ public class Generator {
 			return getRandomCharSequence(cl);
 		if (Serializable.class.isAssignableFrom(cl))
 			return getRandomSerializable(cl);
-		if (cl.isArray()) {
-			Object[] objs = new Object[(new Random()).nextInt(quantity)];
-			for (int i = 0; i < objs.length; ++i)
-				objs[i] = getRandomObjectFromClass(cl.getComponentType());
-			return objs;
+		if (cl.isArray())
+			return getArrayOfObjects(cl.getComponentType(), quantity);
+		if (cl.isInterface())
+			return getEmptyInterfaceProxy(cl);
+		return getFromConstructor(cl);
+	}
+
+	/**
+	 * Returns an empty proxy of a given interface. All methods in the proxy do
+	 * nothing and return null.
+	 * 
+	 * @param cl
+	 * @return
+	 */
+	private Object getEmptyInterfaceProxy(Class<?> cl) {
+		if (!cl.isInterface()) {
+			System.err.println("Class " + cl.getName()
+					+ " is not an interface! Generating something else.");
+			return getRandomObjectFromClass(cl);
 		}
-		// HELL. Will do this later.
-		try {
-			Constructor<?>[] constructors = cl.getDeclaredConstructors();
-			if (constructors.length == 0) {
-				System.out.println("No public constructor for class "
-						+ cl.getName() + ".");
-				if (cl.isInterface())
-					return null;
-				else
-					return null;
+		InvocationHandler handler = new InvocationHandler() {
+			@Override
+			public Object invoke(Object proxy, Method method, Object[] args)
+					throws Throwable {
+				return null;
 			}
-			// favor default constructors //no better idea at this time.
-			for (Constructor<?> c : constructors)
-				if (c.getParameterTypes().length == 0)
-					return c.newInstance();
-			int index = rand.nextInt(constructors.length);
-			Class<?>[] cTypes = constructors[index].getParameterTypes();
-			Object[] cArgs = new Object[cTypes.length];
-			// printConstructorInfo(cl, index, cTypes);
-			for (int i = 0; i < cTypes.length; ++i)
-				cArgs[i] = getRandomObjectFromClass(cTypes[i]);
-			return constructors[index].newInstance(cArgs);
+		};
+		return Proxy.newProxyInstance(cl.getClassLoader(), new Class[] { cl },
+				handler);
+	}
+
+	/**
+	 * Returns an array of objects of specified type.
+	 * 
+	 * @param cl
+	 * @param quantity
+	 * @return
+	 */
+	private Object[] getArrayOfObjects(Class<?> cl, int quantity) {
+		Object[] objs = new Object[(new Random()).nextInt(quantity)];
+		for (int i = 0; i < objs.length; ++i)
+			objs[i] = getRandomObjectFromClass(cl);
+		return objs;
+	}
+
+	/**
+	 * Returns an object from its constructor. If possible, an empty constructor
+	 * is selected. In other case, a random constructor is picked. If no
+	 * constructor exists, returns null.
+	 * 
+	 * @param cl
+	 * @return
+	 */
+	private Object getFromConstructor(Class<?> cl) {
+		try {
+			try {
+				Constructor<?> constructor = cl.getDeclaredConstructor();
+				constructor.setAccessible(true);
+				return constructor.newInstance();
+			} catch (NoSuchMethodException nsme) {
+				Constructor<?>[] constructors = cl.getDeclaredConstructors();
+				if (constructors.length == 0) {
+					System.out.println("No public constructor for class "
+							+ cl.getName() + "; returning null.");
+					return null;
+				}
+				int index = rand.nextInt(constructors.length);
+				constructors[index].setAccessible(true);
+				Class<?>[] argTypes = constructors[index].getParameterTypes();
+				Object[] args = new Object[argTypes.length];
+				for (int i = 0; i < args.length; ++i)
+					args[i] = getRandomObjectFromClass(argTypes[i]);
+				return constructors[index].newInstance(args);
+			}
 		} catch (Exception e) {
 			System.out.println("Could not create object of class "
 					+ cl.getName() + " due to an \"" + e.getMessage()
@@ -377,17 +438,48 @@ public class Generator {
 		}
 	}
 
-	/*
-	 * TODO: Implement this.
+	/**
+	 * Creates a serializable object from the constructor, if possible. Then,
+	 * attempts to set all its fields to random values.
+	 * 
+	 * @param cl
+	 * @return
 	 */
-	private Serializable getRandomSerializable(Class<?> cl) {
-		return null;
+	private Object getRandomSerializable(Class<?> cl) {
+		Object result = getFromConstructor(cl);
+		if (result == null)
+			return null;
+		Field[] fields = cl.getDeclaredFields();
+		for (int i = 0; i < fields.length; ++i) {
+			fields[i].setAccessible(true);
+			try {
+				if (fields[i].get(result) == null)
+					fields[i].set(result,
+							getRandomObjectFromClass(fields[i].getClass()));
+			} catch (Exception e) {
+			}
+		}
+		return result;
 	}
 
+	/**
+	 * Returns a random char sequence of default length. If UTF-16 encoding is
+	 * possible, returns such. Else, picks default encoding.
+	 * 
+	 * @param cl
+	 * @return
+	 */
 	private String getRandomCharSequence(Class<?> cl) {
 		return getRandomCharSequence(cl, defaultStringLength);
 	}
 
+	/**
+	 * Returns a random char sequence of specified length. If UTF-16 encoding is
+	 * possible, returns such. Else, picks default encoding.
+	 * 
+	 * @param cl
+	 * @return
+	 */
 	private String getRandomCharSequence(Class<?> cl, int strLen) {
 		byte[] buffer = getRandomBytes(strLen);
 		rand.nextBytes(buffer);
@@ -399,6 +491,11 @@ public class Generator {
 		}
 	}
 
+	/**
+	 * Returns a random byte array of specified length.
+	 * @param length
+	 * @return
+	 */
 	private byte[] getRandomBytes(int length) {
 		byte[] buffer = new byte[length];
 		rand.nextBytes(buffer);
