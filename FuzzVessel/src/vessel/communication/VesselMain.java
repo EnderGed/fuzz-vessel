@@ -6,27 +6,33 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import vessel.generation.ShadowWeaver;
+import vessel.utils.VesselUtils;
 
 import generator.Generator;
 
-//do setRemoteControlClientPlaybackPosition int long
-//do registerMediaButtonIntent android.app.PendingIntent android.content.ComponentName android.os.IBinder
-//do setRemoteControlClientPlaybackPosition int long
-//do setStreamSolo int boolean android.os.IBinder
+//EXAMPLE COMMANDS:
+//do 1 setRemoteControlClientPlaybackPosition int long
+//do 1 registerMediaButtonIntent android.app.PendingIntent android.content.ComponentName android.os.IBinder
+//do 1 setRemoteControlClientPlaybackPosition int long
+//do 1 setStreamSolo int boolean android.os.IBinder
+
+/**
+ * Main vessel class. It is responsible mostly for command line communication.
+ * 
+ */
 public class VesselMain {
 
 	private Scanner scanner;
 	private VesselServer server;
 	private Generator generator;
 	private ShadowWeaver weaver;
-	public boolean feierband = false;
-	private String dcMsg = "Ghost application has disconnected.";
 
 	public VesselMain(String addr, int port, String className) throws Exception {
 		server = new VesselServer(addr, port, className);
 		scanner = new Scanner(System.in);
 		generator = new Generator();
 		weaver = new ShadowWeaver();
+		new Thread(server).start();
 	}
 
 	public static void main(String[] args) {
@@ -52,21 +58,17 @@ public class VesselMain {
 			e.printStackTrace();
 			return;
 		}
-		while (!vm.feierband) {
-			vm.handleClient();
-		}
+		vm.mainScannerLoop();
 		vm.server.closeAll();
 		vm.scanner.close();
 		System.out.println("Bye.");
 	}
 
-	public void handleClient() {
-		try {
-			server.connectionAcc();
-		} catch (Exception e) {
-			System.out.println(dcMsg);
-			return;
-		}
+	/**
+	 * Main communication loop. Accepts input from the scanner and reacts
+	 * adequately.
+	 */
+	private void mainScannerLoop() {
 		String comm;
 		while (true) {
 			System.out.println("Type a function.");
@@ -74,54 +76,61 @@ public class VesselMain {
 			if (comm.toLowerCase().startsWith("help"))
 				printHelp();
 			else if (comm.toLowerCase().startsWith("quit")) {
-				feierband = true;
+				server.feierband = true;
 				break;
 			} else if (comm.toLowerCase().startsWith("do")) {
-				try {
-					String[] commSplit = comm.split(" ");
-					performTests(Integer.parseInt(commSplit[1]), commSplit[2],
-							Arrays.copyOfRange(commSplit, 3, commSplit.length));
-				} catch (NumberFormatException nfe) {
-					System.out.println("Incorrect trials number.");
-					continue;
-				} catch (EOFException eofe) {
-					System.out.println(dcMsg);
-					server.closeClient();
-					return;
-				} catch (Exception e) {
-					e.printStackTrace();
-					break;
-				}
+				if (server.isConnected())
+					try {
+						String[] commSplit = comm.split(" ");
+						performTests(Integer.parseInt(commSplit[1]),
+								commSplit[2], Arrays.copyOfRange(commSplit, 3,
+										commSplit.length));
+					} catch (NumberFormatException nfe) {
+						System.out.println("Incorrect trials number.");
+						continue;
+					} catch (EOFException eofe) {
+						System.out.println(VesselUtils.DISCONNECTED);
+						server.closeClient();
+					} catch (Exception e) {
+						e.printStackTrace();
+						break;
+					}
+				else
+					System.out.println(VesselUtils.NOT_CONNECTED);
 			} else if (comm.toLowerCase().startsWith("query")
 					|| comm.toLowerCase().startsWith("initiate")) {
-				try {
-					server.send(comm);
-					System.out.println(server.receive());
-				} catch (EOFException eofe) {
-					System.out.println(dcMsg);
-					server.closeClient();
-					return;
-				} catch (Exception e) {
-					e.printStackTrace();
-					break;
-				}
+				if (server.isConnected())
+					try {
+						server.send(comm);
+						System.out.println(server.receive());
+					} catch (EOFException eofe) {
+						System.out.println(VesselUtils.DISCONNECTED);
+						server.closeClient();
+					} catch (Exception e) {
+						e.printStackTrace();
+						break;
+					}
+				else
+					System.out.println(VesselUtils.NOT_CONNECTED);
 			} else {
 				System.out
 						.println("Incorrect command. Type \"help\" for hints.");
 			}
 		}
-		try {
-			server.goodbye();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		server.closeClient();
 	}
 
-	public void performTests(int trialsNumber, String methodName, String[] args)
+	/**
+	 * Run a loop in which the server performs a series of tests.
+	 * 
+	 * @param trials
+	 * @param methodName
+	 * @param args
+	 * @throws Exception
+	 */
+	private void performTests(int trials, String methodName, String[] args)
 			throws Exception {
 		long overallStartTime = System.currentTimeMillis();
-		for (int i = 0; i < trialsNumber; ++i) {
+		for (int i = 0; i < trials; ++i) {
 			try {
 				server.performTest(generator, weaver, methodName, args);
 			} catch (ClassNotFoundException cnfe) {
@@ -140,7 +149,10 @@ public class VesselMain {
 				+ overallEstimatedTime + " ms.");
 	}
 
-	public static void printHelp() {
+	/**
+	 * Does exactly what you'd expect.
+	 */
+	private static void printHelp() {
 		System.out.println("=== HELP ===");
 		System.out
 				.println("do [number] [method name] [arg types ... ]\tExecute method with generated args of specified types.");
@@ -154,7 +166,11 @@ public class VesselMain {
 		System.out.println("quit\t\t\t\t\tExit the program.");
 	}
 
-	public static void printUsage() {
+	/**
+	 * Prints usage. This is normally called when invalid arguments are given
+	 * when starting the program.
+	 */
+	private static void printUsage() {
 		System.out
 				.println("USAGE: VesselMain [address] [port number] (optionally)[class name]");
 	}

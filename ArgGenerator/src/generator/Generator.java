@@ -502,33 +502,6 @@ public class Generator {
 		return buffer;
 	}
 
-	/*
-	 * A logging method. Does not exactly print constructor types; just names of
-	 * some classes stored in variables. TODO: Delete this before release.
-	 * 
-	 * @hide
-	 * 
-	 * @param cl
-	 * 
-	 * @param index
-	 * 
-	 * @param cTypes
-	 */
-	@SuppressWarnings("unused")
-	private void printConstructorInfo(Class<?> cl, int index, Class<?>[] cTypes) {
-		StringBuilder info = new StringBuilder(
-				"Attempting to create new instance of class ");
-		info.append(cl.getName());
-		info.append(" from constructor no. ");
-		info.append(index);
-		info.append(": ");
-		for (Class<?> cType : cTypes) {
-			info.append(cType.getName());
-			info.append(" ");
-		}
-		System.out.println(info.toString());
-	}
-
 	public int getDefaultQuantity() {
 		return defaultQuantity;
 	}

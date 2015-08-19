@@ -1,5 +1,7 @@
 package vessel.generation;
 
+import vessel.utils.VesselUtils;
+
 /**
  * Read the android sources to get some data.
  */
@@ -40,7 +42,7 @@ public class SourceReader {
 	 * names of param classes.
 	 */
 	public String[] readConstructorParams(String className) {
-		return null;
+		return new String[0];
 	}
 
 	/**
@@ -52,6 +54,9 @@ public class SourceReader {
 	 * @return
 	 */
 	public boolean isAndroid(String className) {
+		String[] primitives = {"boolean", "byte", "char", "double", "float", "int", "long", "short"};
+		if(VesselUtils.isInArray(primitives, className))
+			return false;
 		try {
 			ClassLoader.getSystemClassLoader().loadClass(className);
 			return false;
@@ -65,7 +70,7 @@ public class SourceReader {
 	 * "2xn array" of type names and field names.
 	 */
 	public String[] getParcelableFields(String className) {
-		return null;
+		return new String[0];
 	}
 
 }

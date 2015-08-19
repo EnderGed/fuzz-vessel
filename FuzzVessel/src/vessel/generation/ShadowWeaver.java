@@ -88,7 +88,7 @@ public class ShadowWeaver {
 			throws ClassNotFoundException, InvalidClassException {
 		ParcelableShadow ps = new ParcelableShadow(className);
 		String[] parcelableFields = reader.getParcelableFields(className);
-		if (parcelableFields.length % 2 == 0) {
+		if (parcelableFields.length % 2 != 0) {
 			System.err.println("Data format error.");
 			return null;
 		}
