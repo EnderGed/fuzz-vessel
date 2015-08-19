@@ -16,9 +16,18 @@ import generator.Generator;
 public class VesselMain {
 
 	private Scanner scanner;
-	private VesselServer server = null;
+	private VesselServer server;
+	private Generator generator;
+	private ShadowWeaver weaver;
 	public boolean feierband = false;
 	private String dcMsg = "Ghost application has disconnected.";
+
+	public VesselMain(String addr, int port, String className) throws Exception {
+		server = new VesselServer(addr, port, className);
+		scanner = new Scanner(System.in);
+		generator = new Generator();
+		weaver = new ShadowWeaver();
+	}
 
 	public static void main(String[] args) {
 		if (args.length != 2 && args.length != 3) {
@@ -36,14 +45,13 @@ public class VesselMain {
 		}
 		if (args.length == 3)
 			className = args[2];
-		VesselMain vm = new VesselMain();
+		VesselMain vm;
 		try {
-			vm.server = new VesselServer(addr, port, className);
+			vm = new VesselMain(addr, port, className);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
-		vm.scanner = new Scanner(System.in);
 		while (!vm.feierband) {
 			vm.handleClient();
 		}
@@ -60,8 +68,6 @@ public class VesselMain {
 			return;
 		}
 		String comm;
-		Generator generator = new Generator();
-		ShadowWeaver weaver = new ShadowWeaver();
 		while (true) {
 			System.out.println("Type a function.");
 			comm = scanner.nextLine();
@@ -73,31 +79,11 @@ public class VesselMain {
 			} else if (comm.toLowerCase().startsWith("do")) {
 				try {
 					String[] commSplit = comm.split(" ");
-					String methodName = commSplit[1];
-					String[] args = Arrays.copyOfRange(commSplit, 2,
-							commSplit.length);
-					Class<?>[] types = generator.getClassesFromClassNames(args);
-					Object[] values;
-					try {
-						values = generator.generateValuesFromRaw(weaver
-								.weaveArray(args));
-					} catch (ClassNotFoundException cnfe) {
-						System.out
-								.println("Incorrect class detected. (Class not found exception)");
-						continue;
-					} catch (InvalidClassException ice) {
-						System.out
-								.println("Incorrect class detected. (Invalid class exception)");
-						continue;
-					}
-					long startTime = System.currentTimeMillis();
-					server.sendMethodData(methodName, types, values);
-					System.out
-							.println("Please wait for end of test execution.");
-					System.out.println(server.receive());
-					long estimatedTime = System.currentTimeMillis() - startTime;
-					System.out.println("Tests were completed in "
-							+ estimatedTime + " ms.");
+					performTests(Integer.parseInt(commSplit[1]), commSplit[2],
+							Arrays.copyOfRange(commSplit, 3, commSplit.length));
+				} catch (NumberFormatException nfe) {
+					System.out.println("Incorrect trials number.");
+					continue;
 				} catch (EOFException eofe) {
 					System.out.println(dcMsg);
 					server.closeClient();
@@ -132,10 +118,32 @@ public class VesselMain {
 		server.closeClient();
 	}
 
+	public void performTests(int trialsNumber, String methodName, String[] args)
+			throws Exception {
+		long overallStartTime = System.currentTimeMillis();
+		for (int i = 0; i < trialsNumber; ++i) {
+			try {
+				server.performTest(generator, weaver, methodName, args);
+			} catch (ClassNotFoundException cnfe) {
+				System.out
+						.println("Incorrect class detected. (Class not found exception)");
+				continue;
+			} catch (InvalidClassException ice) {
+				System.out
+						.println("Incorrect class detected. (Invalid class exception)");
+				continue;
+			}
+		}
+		long overallEstimatedTime = System.currentTimeMillis()
+				- overallStartTime;
+		System.out.println("All tests were completed in "
+				+ overallEstimatedTime + " ms.");
+	}
+
 	public static void printHelp() {
 		System.out.println("=== HELP ===");
 		System.out
-				.println("do [method name] [arg types ... ]\tExecute method with generated args of specified types.");
+				.println("do [number] [method name] [arg types ... ]\tExecute method with generated args of specified types.");
 		System.out.println("help\t\t\t\t\tPrint this message.");
 		System.out
 				.println("initiate [class name]\t\t\tInitiate tests for class [class name].");

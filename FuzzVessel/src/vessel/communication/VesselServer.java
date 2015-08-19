@@ -1,11 +1,16 @@
 package vessel.communication;
 
+import generator.Generator;
+
+import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import vessel.generation.ShadowWeaver;
 import vessel.utils.VesselUtils;
 
 public class VesselServer{
@@ -59,12 +64,24 @@ public class VesselServer{
 			throw e;
 		}
 	}
+	
+	public void performTest(Generator generator, ShadowWeaver weaver, String methodName, String[] args) throws Exception{
+		Class<?>[] types = generator
+				.getClassesFromClassNames(args);
+		Object[] values;
+			values = generator.generateValuesFromRaw(weaver
+					.weaveArray(args));
+		long startTime = System.currentTimeMillis();
+		sendMethodData(methodName, types, values);
+		System.out
+				.println("Please wait for end of test execution.");
+		System.out.println(receive());
+		long estimatedTime = System.currentTimeMillis()
+				- startTime;
+		System.out.println("Test completed in " + estimatedTime
+				+ " ms.");
+	}
 
-	/*
-	 * This cannot be handled by the Ghost application at this time, so instead
-	 * of sending data, the Vessel simply prints classnames of the generated
-	 * objects.
-	 */
 	public void sendMethodData(String methodName, Class<?>[] argTypes, Object[] objs)
 			throws Exception {
 		String[] mn = { methodName };
