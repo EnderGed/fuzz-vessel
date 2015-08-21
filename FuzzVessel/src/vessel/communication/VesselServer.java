@@ -1,5 +1,9 @@
 package vessel.communication;
 
+import fuzzcommons.Command;
+import fuzzcommons.Command.CommandType;
+import fuzzcommons.HelloBye.Greeting;
+import fuzzcommons.HelloBye;
 import generator.Generator;
 
 import java.io.ObjectInputStream;
@@ -78,7 +82,7 @@ public class VesselServer implements Runnable {
 			oos = new ObjectOutputStream(cSocket.getOutputStream());
 			ois = new ObjectInputStream(cSocket.getInputStream());
 			System.out.println("New connection accepted.");
-			send("hello " + className);
+			hello(className);
 			System.out.println(receive());
 			connected = true;
 		} catch (SocketException se) {
@@ -98,9 +102,26 @@ public class VesselServer implements Runnable {
 	 * @param message
 	 * @throws Exception
 	 */
-	public void send(String message) throws Exception {
+	/*public void send(String message) throws Exception {
 		String[] words = message.split(" ");
 		oos.writeObject(words);
+		oos.flush();
+	}*/
+	
+	
+	public void sendQueryClassCommand() throws Exception {
+		oos.writeObject(new Command(CommandType.QUERY_CLASS, null, null, null));
+		oos.flush();
+	}
+	
+	
+	public void sendQueryMethodCommand(String methodName) throws Exception {
+		oos.writeObject(new Command(CommandType.QUERY_METHOD, methodName, null, null));
+		oos.flush();
+	}
+	
+	public void sendInitiateClassCommand(String className) throws Exception {
+		oos.writeObject(new Command(CommandType.INITIATE, className, null, null));
 		oos.flush();
 	}
 
@@ -120,7 +141,7 @@ public class VesselServer implements Runnable {
 		Class<?>[] types = generator.getClassesFromClassNames(args);
 		Object[] values;
 		values = generator.generateValuesFromRaw(weaver.weaveArray(args));
-		sendMethodData(methodName, types, values);
+		sendDoCommand(methodName, types, values);
 		System.out.println("Please wait for the end of test execution.");
 		System.out.println(receive());
 		long estimatedTime = System.currentTimeMillis() - startTime;
@@ -128,29 +149,16 @@ public class VesselServer implements Runnable {
 	}
 
 	/**
-	 * Send a string array describing how to run a method. The array format is
-	 * [method name || argument types... || false || argument values...]. The
-	 * "false" position separates argument types from argument values so that
-	 * the Ghost knows when to stop registering argument types for the given
-	 * method and start recording the values. The correct message should have an
-	 * equal number of arg types and values.
+	 * Send a command describing how to run a method.
 	 * 
 	 * @param methodName
 	 * @param argTypes
 	 * @param argValues
 	 * @throws Exception
 	 */
-	public void sendMethodData(String methodName, Class<?>[] argTypes,
+	public void sendDoCommand(String methodName, Class<?>[] argTypes,
 			Object[] argValues) throws Exception {
-		String[] mn = { methodName };
-		Boolean[] separator = { false };
-		Object[] objAll = VesselUtils.joinArrays(
-				VesselUtils.joinArrays(mn, argTypes),
-				VesselUtils.joinArrays(separator, argValues));
-		for (Object o : objAll) {
-			System.out.println(o);
-		}
-		oos.writeObject(objAll);
+		oos.writeObject(new Command(CommandType.DO, methodName, argTypes, argValues));
 		oos.flush();
 	}
 
@@ -171,8 +179,17 @@ public class VesselServer implements Runnable {
 	 * @throws Exception
 	 */
 	public void goodbye() throws Exception {
-		String[] goodbye = { "goodbye" };
-		oos.writeObject(goodbye);
+		oos.writeObject(new HelloBye(Greeting.GOODBYE));
+		oos.flush();
+	}
+	
+	/**
+	 * Send a "hello" message to the client and give them a the class name.
+	 * 
+	 * @throws Exception
+	 */
+	public void hello(String className) throws Exception {
+		oos.writeObject(new HelloBye(Greeting.HELLO, className));
 		oos.flush();
 	}
 

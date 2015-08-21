@@ -1,5 +1,7 @@
 package vessel.generation;
 
+//import java.sql.*;
+
 import vessel.utils.VesselUtils;
 
 /**
@@ -9,6 +11,29 @@ import vessel.utils.VesselUtils;
  * TODO: A lot. Fetch me some database connection here.
  */
 public class SourceReader {
+
+	/*public static void test() {
+		String dbPath = "test.db"; //DON'T LEAVE IT LIKE THIS
+		Connection c = null;
+		Statement stmt = null;
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+			stmt = c.createStatement();
+			String sql = "SELECT * FROM Classes";
+			ResultSet rs = stmt.executeQuery(sql);
+			//Array a = rs.getArray("name");
+			while(rs.next())
+				System.out.println(rs.getString("name"));
+			stmt.close();
+			c.close();
+			System.exit(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		System.out.println("Opened database successfully");
+	}*/
 
 	/*
 	 * TODO: This array is a placeholder. Normally, some array of possible
@@ -54,8 +79,9 @@ public class SourceReader {
 	 * @return
 	 */
 	public boolean isAndroid(String className) {
-		String[] primitives = {"boolean", "byte", "char", "double", "float", "int", "long", "short"};
-		if(VesselUtils.isInArray(primitives, className))
+		String[] primitives = { "boolean", "byte", "char", "double", "float",
+				"int", "long", "short" };
+		if (VesselUtils.isInArray(primitives, className))
 			return false;
 		try {
 			ClassLoader.getSystemClassLoader().loadClass(className);
@@ -64,7 +90,7 @@ public class SourceReader {
 			return true;
 		}
 	}
-	
+
 	/*
 	 * TODO: Connect to some database to find this stuff. This should come as a
 	 * "2xn array" of type names and field names.

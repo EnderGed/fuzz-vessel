@@ -28,6 +28,7 @@ public class VesselMain {
 	private ShadowWeaver weaver;
 
 	public VesselMain(String addr, int port, String className) throws Exception {
+		// SourceReader.test();
 		server = new VesselServer(addr, port, className);
 		scanner = new Scanner(System.in);
 		generator = new Generator();
@@ -101,8 +102,8 @@ public class VesselMain {
 					|| comm.toLowerCase().startsWith("initiate")) {
 				if (server.isConnected())
 					try {
-						server.send(comm);
-						System.out.println(server.receive());
+						if (sendSimpleCommand(comm.toLowerCase()))
+							System.out.println(server.receive());
 					} catch (EOFException eofe) {
 						System.out.println(VesselUtils.DISCONNECTED);
 						server.closeClient();
@@ -113,9 +114,30 @@ public class VesselMain {
 				else
 					System.out.println(VesselUtils.NOT_CONNECTED);
 			} else {
-				System.out
-						.println("Incorrect command. Type \"help\" for hints.");
+				System.out.println(VesselUtils.INCORRECT_COMMAND);
 			}
+		}
+	}
+
+	private boolean sendSimpleCommand(String command) throws Exception {
+		try {
+			String[] details = command.split(" ");
+			if (details.length == 3 && details[0].equals("query")
+					&& details[1].equals("method"))
+				server.sendQueryMethodCommand(details[2]);
+			else if (details.length == 2 && details[0].equals("query") && details[1].equals("class"))
+				server.sendQueryClassCommand();
+			else if (details.length == 2 && details[0].equals("initiate"))
+				server.sendInitiateClassCommand(details[1]);
+			else {
+				System.out.println(VesselUtils.INCORRECT_COMMAND);
+				return false;
+			}
+			return true;
+		} catch (EOFException eofe) {
+			System.out.println(VesselUtils.DISCONNECTED);
+			server.closeClient();
+			return false;
 		}
 	}
 

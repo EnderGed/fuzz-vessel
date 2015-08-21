@@ -8,6 +8,7 @@ public class VesselUtils {
 
 	public static final String DISCONNECTED = "Ghost application has disconnected.";
 	public static final String NOT_CONNECTED = "No ghost connected!";
+	public static final String INCORRECT_COMMAND = "Incorrect command. Type \"help\" for hints.";
 
 	/**
 	 * Join an array of strings and return is as a single string.
