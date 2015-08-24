@@ -120,7 +120,7 @@ if package and main_class:
   else:
     print "Null"
   conn.commit()
-  conn.close()
 
 else:
   print "Fail, could not extract class and package name from the file."
+conn.close()
