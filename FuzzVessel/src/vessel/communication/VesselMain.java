@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import vessel.generation.ShadowWeaver;
+import vessel.generation.SourceReader;
 import vessel.utils.VesselUtils;
 
 import generator.Generator;
@@ -28,7 +29,6 @@ public class VesselMain {
 	private ShadowWeaver weaver;
 
 	public VesselMain(String addr, int port, String className) throws Exception {
-		// SourceReader.test();
 		server = new VesselServer(addr, port, className);
 		scanner = new Scanner(System.in);
 		generator = new Generator();

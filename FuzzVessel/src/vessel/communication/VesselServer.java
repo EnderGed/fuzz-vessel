@@ -93,20 +93,6 @@ public class VesselServer implements Runnable {
 			throw e;
 		}
 	}
-
-	/**
-	 * Send a message. The message format are words separated with a whitespace
-	 * (" "). The message is converted to a string array and then sent via
-	 * Object Output Stream.
-	 * 
-	 * @param message
-	 * @throws Exception
-	 */
-	/*public void send(String message) throws Exception {
-		String[] words = message.split(" ");
-		oos.writeObject(words);
-		oos.flush();
-	}*/
 	
 	
 	public void sendQueryClassCommand() throws Exception {
@@ -141,6 +127,8 @@ public class VesselServer implements Runnable {
 		Class<?>[] types = generator.getClassesFromClassNames(args);
 		Object[] values;
 		values = generator.generateValuesFromRaw(weaver.weaveArray(args));
+		//for(int i=0; i<values.length; ++i)
+		//	System.out.println(types[i] + " " + values[i]);
 		sendDoCommand(methodName, types, values);
 		System.out.println("Please wait for the end of test execution.");
 		System.out.println(receive());
